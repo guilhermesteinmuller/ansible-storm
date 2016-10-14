@@ -6,8 +6,8 @@
   user: name={{storm_user}} system=yes group={{storm_group}}
 
 - name: Create Storm root directory
-  file: path={{storm_root_dir}} state=directory owner={{storm_user}} group={{storm_group}} mode=755
-
+  file: path={{storm_root_dir}} state=directory owner={{storm_user}} group={{storm_group}} mode=0755
+0
 - name: Uncompress the storm tar
   unarchive: copy=no creates={{storm_root_dir}}/apache-storm-{{storm_version}} dest={{storm_root_dir}} src={{ download_tmp_dir }}/apache-storm-{{storm_version}}.tar.gz
 
@@ -15,7 +15,7 @@
   file: path={{storm_root_dir}}/current state=link src={{storm_root_dir}}/apache-storm-{{storm_version}}
 
 - name: Create Storm log and local directories
-  file: path={{item}} state=directory owner={{storm_user}} group={{storm_group}} mode=775
+  file: path={{item}} state=directory owner={{storm_user}} group={{storm_group}} mode=0775
   with_items:
     - "{{storm_local_dir}}"
     - "/var/log/storm"
@@ -33,13 +33,13 @@
   when: not storm_logs_dir.stat.exists
 
 - name: Configure storm_env.ini
-  template: dest="{{storm_root_dir}}/apache-storm-{{storm_version}}/conf/storm_env.ini" owner={{storm_user}} group={{storm_group}} mode=644 src=storm_env.ini.j2
+  template: dest="{{storm_root_dir}}/apache-storm-{{storm_version}}/conf/storm_env.ini" owner={{storm_user}} group={{storm_group}} mode=0644 0src=storm_env.ini.j2
   notify:
     - Restart Nimbus
     - Restart Supervisor
 
 - name: Configure cluster.xml for setting log level
-  template: dest="{{storm_root_dir}}/apache-storm-{{storm_version}}/logback/cluster.xml" owner={{storm_user}} group={{storm_group}} mode=644 src=cluster.xml.j2
+  template: dest="{{storm_root_dir}}/apache-storm-{{storm_version}}/logback/cluster.xml" owner={{storm_user}} group={{storm_group}} mode=0644 0src=cluster.xml.j2
   notify:
     - Restart Nimbus
     - Restart Supervisor

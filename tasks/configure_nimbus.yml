@@ -6,25 +6,25 @@
     - Restart UI
 
 - name: Setup Storm nimbus upstart script
-  copy: dest={{nimbus_upstart_conf}} owner=root group=root mode=644 src=storm-nimbus.conf
+  copy: dest={{nimbus_upstart_conf}} owner=root group=root mode=0644 src=storm-nimbus.conf
   notify:
     - Restart Nimbus
   when: not use_systemd
 
 - name: Setup Storm nimbus systemd script
-  copy: dest={{nimbus_systemd_service}} owner=root group=root mode=644 src=storm-nimbus.service
+  copy: dest={{nimbus_systemd_service}} owner=root group=root mode=0644 src=storm-nimbus.service
   notify:
     - Restart Nimbus
   when: use_systemd
 
 - name: Setup Storm UI upstart script
-  copy: dest={{stormui_upstart_conf}} owner=root group=root mode=644 src=storm-ui.conf
+  copy: dest={{stormui_upstart_conf}} owner=root group=root mode=0644 src=storm-ui.conf
   notify:
     - Restart UI
   when: storm_ui_enabled and not use_systemd
 
 - name: Setup Storm UI systemd script
-  copy: dest={{stormui_systemd_service}} owner=root group=root mode=644 src=storm-ui.service
+  copy: dest={{stormui_systemd_service}} owner=root group=root mode=0644 src=storm-ui.service
   notify:
     - Restart UI
   when: storm_ui_enabled and use_systemd
