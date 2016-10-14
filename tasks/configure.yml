@@ -32,14 +32,6 @@
   file: path={{storm_root_dir}}/current/logs state=link src=/var/log/storm
   when: not storm_logs_dir.stat.exists
 
-- name: Detect if this is a systemd based system
-  command: cat /proc/1/comm
-  register: init
-- set_fact: use_systemd=True
-  when: init.stdout == 'systemd'
-- set_fact: use_systemd=False
-  when: init.stdout != 'systemd'
-
 - name: Configure storm_env.ini
   template: dest="{{storm_root_dir}}/apache-storm-{{storm_version}}/conf/storm_env.ini" owner={{storm_user}} group={{storm_group}} mode=644 src=storm_env.ini.j2
   notify:
