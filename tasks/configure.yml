@@ -1,45 +1,84 @@
 ---
 - name: Setup group
-  group: name={{storm_group}} system=yes
+  group:
+    name: '{{ storm_group }}'
+    system: yes
 
 - name: Setup user
-  user: name={{storm_user}} system=yes group={{storm_group}}
+  user:
+    name: '{{ storm_user }}'
+    system: yes
+    group: '{{ storm_group }}'
 
 - name: Create Storm root directory
-  file: path={{storm_root_dir}} state=directory owner={{storm_user}} group={{storm_group}} mode=0755
+  file:
+    path: '{{ storm_root_dir }}'
+    state: directory
+    owner: '{{ storm_user }}'
+    group: '{{ storm_group }}'
+    mode: 0755
 
 - name: Uncompress the storm tar
-  unarchive: copy=no creates={{storm_root_dir}}/apache-storm-{{storm_version}} dest={{storm_root_dir}} src={{ download_tmp_dir }}/apache-storm-{{storm_version}}.tar.gz
+  unarchive:
+    copy: no
+    creates: '{{ storm_root_dir }}/apache-storm-{{ storm_version }}'
+    dest: '{{ storm_root_dir }}'
+    src: '{{  download_tmp_dir  }}/apache-storm-{{ storm_version }}.tar.gz'
 
 - name: Link current version
-  file: path={{storm_root_dir}}/current state=link src={{storm_root_dir}}/apache-storm-{{storm_version}}
+  file:
+    path: '{{ storm_root_dir }}/current'
+    state: link
+    src: '{{ storm_root_dir }}/apache-storm-{{ storm_version }}'
 
 - name: Create Storm log and local directories
-  file: path={{item}} state=directory owner={{storm_user}} group={{storm_group}} mode=0775
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: '{{ storm_user }}'
+    group: '{{ storm_group }}'
+    mode: 0775
   with_items:
-    - "{{storm_local_dir}}"
+    - "{{ storm_local_dir }}"
     - "/var/log/storm"
 
 - name: Copy custom logback cluster.xml over the default one, if present
-  shell: cp {{storm_cluster_logback_xml}} {{storm_root_dir}}/current/logback/cluster.xml
+  copy:
+    remote_src: '{{ storm_cluster_logback_xml }}'
+    dest: '{{ storm_root_dir }}/current/logback/cluster.xml'
   when: storm_cluster_logback_xml is defined
 
 - name: Check if Storm log directory already exists
-  stat: path={{storm_root_dir}}/current/logs get_md5=False
+  stat:
+    path: '{{ storm_root_dir }}/current/logs'
+    get_md5: False
   register: storm_logs_dir
 
 - name: Create Storm log symlink to /var/log/storm if directory does not exist
-  file: path={{storm_root_dir}}/current/logs state=link src=/var/log/storm
+  file:
+    path: '{{ storm_root_dir }}/current/logs'
+    state: link
+    src: /var/log/storm
   when: not storm_logs_dir.stat.exists
 
 - name: Configure storm_env.ini
-  template: dest="{{storm_root_dir}}/apache-storm-{{storm_version}}/conf/storm_env.ini" owner={{storm_user}} group={{storm_group}} mode=0644 src=storm_env.ini.j2
+  template:
+    dest: '{{ storm_root_dir }}/apache-storm-{{ storm_version }}/conf/storm_env.ini'
+    owner: '{{ storm_user }}'
+    group: '{{ storm_group }}'
+    mode: 0644
+    src: storm_env.ini.j2
   notify:
     - Restart Nimbus
     - Restart Supervisor
 
 - name: Configure cluster.xml for setting log level
-  template: dest="{{storm_root_dir}}/apache-storm-{{storm_version}}/logback/cluster.xml" owner={{storm_user}} group={{storm_group}} mode=0644 src=cluster.xml.j2
+  template:
+    dest: '{{ storm_root_dir }}/apache-storm-{{ storm_version }}/logback/cluster.xml'
+    owner: '{{ storm_user }}'
+    group: '{{ storm_group }}'
+    mode: 0644
+    src: cluster.xml.j2
   notify:
     - Restart Nimbus
     - Restart Supervisor

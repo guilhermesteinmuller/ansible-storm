@@ -9,11 +9,12 @@
 
 - name: Install Apt dependencies
   apt:
-    pkg: "{{ item }}"
-    state: "latest"
+    pkg: '{{ item }}'
+    state: latest
   register: install_deps
   until: install_deps | success
   retries: 5
   delay: 2
-  with_items: "{{ storm_distro_packages }}"
+  with_items:
+    - '{{ storm_distro_packages }}'
   when: not skip_install
