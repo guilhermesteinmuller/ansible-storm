@@ -36,7 +36,7 @@ storm_zookeeper_extra_config:
 download_tmp_dir: /root
 storm_tarball_name: apache-storm-{{storm_version}}.tar.gz
 
-storm_jvm_opts: XX:+PerfDisableSharedMem
+storm_jvm_opts: -XX:+PerfDisableSharedMem
 
 monasca_log_level: WARN
 monasca_wait_for_period: 60
