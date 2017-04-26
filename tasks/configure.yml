@@ -41,6 +41,7 @@
   with_items:
     - "{{ storm_local_dir }}"
     - "/var/log/storm"
+    - "{{ storm_root_dir }}/apache-storm-{{ storm_version }}/logback"
 
 - name: Copy custom logback cluster.xml over the default one, if present
   copy:
