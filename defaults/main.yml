@@ -1,5 +1,5 @@
 ---
-apache_mirror: http://ftp.unicamp.br/pub/apache
+apache_mirror: http://mirror.23media.de/apache
 nimbus_thrift_port: 6627
 storm_drpc_extra_config:
 storm_local_dir: /var/storm
