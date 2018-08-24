@@ -1,0 +1,6 @@
+---
+- name: Install zypper OpenJDK
+  zypper:
+    name: java-1_8_0-openjdk
+    state: present
+  when: not skip_install

@@ -5,6 +5,9 @@
 - include: RedHatInst.yml
   when: "ansible_os_family == 'RedHat'"
 
+- include: SuseInst.yml
+  when: "ansible_os_family == 'Suse'"
+
 - name: Fetch storm package
   get_url:
     dest: '{{ download_tmp_dir }}/apache-storm-{{ storm_version }}.tar.gz'
